@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Application de Chiffrement</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #fdf6f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .form-container {
+            background-color: #fffaf5;
+            border-radius: 12px;
+            padding: 30px;
+            width: 400px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            font-size: 22px;
+            margin-bottom: 25px;
+        }
+
+        label {
+            font-weight: 600;
+            display: block;
+            margin-top: 15px;
+        }
+
+        input[type="file"],
+        textarea,
+        select {
+            width: 100%;
+            margin-top: 5px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        .file-input-container {
+            position: relative;
+            margin-top: 10px;
+        }
+
+        .file-input-label {
+            display: inline-block;
+            background-color: #f0f0f0;
+            color: #333;
+            padding: 8px 15px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            width: 100%;
+            box-sizing: border-box;
+            text-align: center;
+            margin-top: 5px;
+        }
+
+        .file-input-label:hover {
+            background-color: #e0e0e0;
+        }
+
+        .file-name {
+            margin-top: 5px;
+            font-size: 12px;
+            color: #555;
+            word-break: break-all;
+        }
+
+        textarea {
+            height: 100px;
+            resize: none;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+            margin-bottom: 15px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+        }
+
+        .radio-option input {
+            margin-right: 5px;
+        }
+
+        button {
+            margin-top: 25px;
+            width: 100%;
+            padding: 12px;
+            background-color: #5b8dd6;
+            border: none;
+            color: white;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #497dc4;
+        }
+
+        .result {
+            margin-top: 20px;
+            font-size: 14px;
+            background-color: #f5f9ff;
+            padding: 12px;
+            border-radius: 6px;
+            border-left: 4px solid #5b8dd6;
+        }
+
+        .result a {
+            color: #2980b9;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .result a:hover {
+            text-decoration: underline;
+        }
+        
+        .input-section {
+            margin-top: 15px;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            background-color: #f9f9f9;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 12px;
+            margin-top: 5px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>APPLICATION DE CHIFFREMENT</h1>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <label>Type d'entrée:</label>
+            <div class="radio-group">
+                <div class="radio-option">
+                    <input type="radio" id="type-text" name="input_type" value="text" {% if form.cleaned_data.input_type != 'file' %}checked{% endif %}>
+                    <label for="type-text">Texte</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" id="type-pdf" name="input_type" value="file" {% if form.cleaned_data.input_type == 'file' %}checked{% endif %}>
+                    <label for="type-pdf">PDF</label>
+                </div>
+            </div>
+
+            <label for="method">Méthode de chiffrement:</label>
+            <select id="method" name="method">
+                <option value="aes" selected>AES</option>
+                <option value="algo2">Algo2</option>
+                <option value="algo3">Algo3</option>
+            </select>
+
+            <div id="text-input-section" class="input-section">
+                <label for="text-input">Texte à chiffrer:</label>
+                <textarea id="text-input" name="text" placeholder="Entrez le texte à chiffrer ici">{{ form.text.value }}</textarea>
+            </div>
+
+            <div id="file-input-section" class="input-section">
+                <label for="pdf-file">Fichier PDF à chiffrer:</label>
+                <div class="file-input-container">
+                    <input type="file" id="pdf-file" name="pdf_file" accept=".pdf" style="display: none;">
+                    <label for="pdf-file" class="file-input-label">Choisir un fichier PDF</label>
+                    <div id="file-name" class="file-name">Aucun fichier sélectionné</div>
+                </div>
+                {% if form.errors.pdf_file %}
+                <div class="error-message">{{ form.errors.pdf_file }}</div>
+                {% endif %}
+                {% if form.non_field_errors %}
+                <div class="error-message">{{ form.non_field_errors }}</div>
+                {% endif %}
+            </div>
+
+            <button type="submit">Chiffrer</button>
+        </form>
+
+        {% if download_url %}
+            <div class="result">
+                <p><strong>Fichier chiffré :</strong> <a href="{{ download_url }}">Télécharger</a></p>
+                <p><strong>Clé AES :</strong> {{ key }}</p>
+            </div>
+        {% endif %}
+        
+    </div>
+
+<script>
+    const radioText = document.getElementById('type-text');
+    const radioPdf = document.getElementById('type-pdf');
+    const textSection = document.getElementById('text-input-section');
+    const fileSection = document.getElementById('file-input-section');
+    const fileInput = document.getElementById('pdf-file');
+    const fileNameDisplay = document.getElementById('file-name');
+
+    function toggleInputSections() {
+        if (radioText.checked) {
+            textSection.style.display = 'block';
+            fileSection.style.display = 'none';
+        } else {
+            textSection.style.display = 'none';
+            fileSection.style.display = 'block';
+        }
+    }
+
+    // Mise à jour du nom de fichier affiché
+    fileInput.addEventListener('change', function() {
+        if (this.files.length > 0) {
+            fileNameDisplay.textContent = this.files[0].name;
+        } else {
+            fileNameDisplay.textContent = 'Aucun fichier sélectionné';
+        }
+    });
+
+    radioText.addEventListener('change', toggleInputSections);
+    radioPdf.addEventListener('change', toggleInputSections);
+
+    // Configuration initiale
+    window.addEventListener('DOMContentLoaded', function() {
+        // Par défaut, on sélectionne l'option "Texte" si aucune n'est cochée
+        if (!radioText.checked && !radioPdf.checked) {
+            radioText.checked = true;
+        }
+        toggleInputSections();
+        
+        // S'assurer que le formulaire ne soit pas soumis si un fichier PDF est requis mais non fourni
+        document.querySelector('form').addEventListener('submit', function(event) {
+            if (radioPdf.checked && fileInput.files.length === 0) {
+                event.preventDefault();
+                alert('Veuillez sélectionner un fichier PDF avant de continuer.');
+                return false;
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
