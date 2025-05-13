@@ -38,7 +38,7 @@ def chiffrement_view(request):
                         # Chiffrer et sauvegarder le fichier
                         file_path, _ = save_encrypted_file(pdf_file, key)
                         # Créer l'URL pour le téléchargement
-                        download_url = reverse('download_file', args=[f"{os.path.basename(file_path)}.aes"])
+                        download_url = reverse('download_file', args=[os.path.basename(file_path)])
     else:
         form = ChiffrementForm()
 
@@ -57,7 +57,7 @@ def save_encrypted_file(file, key):
     
     # Générer un nom de fichier unique avec extension .aes
     original_name = os.path.splitext(file.name)[0]  # Remove original extension
-    filename = f"encrypted_{uuid.uuid4().hex}_{original_name}.aes"
+    filename = f"encrypted_{uuid.uuid4().hex}_{original_name}.pdf"
     path = os.path.join(settings.MEDIA_ROOT, "encrypted", filename)
     
     # Sauvegarder
@@ -72,7 +72,8 @@ def download_file(request, filename):
     print(f"Looking for file at: {full_path}")  # Debug output
     
     if os.path.exists(full_path):
-        response = FileResponse(open(full_path, 'rb'), as_attachment=True, filename=filename)
+        response = FileResponse(open(full_path, 'rb'), as_attachment=True)
+        response['Content-Disposition'] = f'attachment; filename="{filename}.pdf"'
         return response
     else:
         print(f"File not found at: {full_path}")  # Debug output
