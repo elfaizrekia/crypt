@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Application de Chiffrement</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
@@ -133,7 +134,7 @@
         .result a:hover {
             text-decoration: underline;
         }
-        
+
         .input-section {
             margin-top: 15px;
             padding: 12px;
@@ -147,6 +148,12 @@
             font-size: 12px;
             margin-top: 5px;
             font-weight: 600;
+        }
+
+        #encrypted-output {
+            margin-top: 10px;
+            height: 100px;
+            background-color: #f0f8ff;
         }
     </style>
 </head>
@@ -178,6 +185,9 @@
             <div id="text-input-section" class="input-section">
                 <label for="text-input">Texte à chiffrer:</label>
                 <textarea id="text-input" name="text" placeholder="Entrez le texte à chiffrer ici">{{ form.text.value }}</textarea>
+
+                <label for="encrypted-output">Texte chiffré :</label>
+                <textarea id="encrypted-output" readonly placeholder="Texte chiffré s'affichera ici..."></textarea>
             </div>
 
             <div id="file-input-section" class="input-section">
@@ -204,57 +214,65 @@
                 <p><strong>Clé AES :</strong> {{ key }}</p>
             </div>
         {% endif %}
-        
     </div>
 
-<script>
-    const radioText = document.getElementById('type-text');
-    const radioPdf = document.getElementById('type-pdf');
-    const textSection = document.getElementById('text-input-section');
-    const fileSection = document.getElementById('file-input-section');
-    const fileInput = document.getElementById('pdf-file');
-    const fileNameDisplay = document.getElementById('file-name');
+    <script>
+        const radioText = document.getElementById('type-text');
+        const radioPdf = document.getElementById('type-pdf');
+        const textSection = document.getElementById('text-input-section');
+        const fileSection = document.getElementById('file-input-section');
+        const fileInput = document.getElementById('pdf-file');
+        const fileNameDisplay = document.getElementById('file-name');
 
-    function toggleInputSections() {
-        if (radioText.checked) {
-            textSection.style.display = 'block';
-            fileSection.style.display = 'none';
-        } else {
-            textSection.style.display = 'none';
-            fileSection.style.display = 'block';
-        }
-    }
-
-    // Mise à jour du nom de fichier affiché
-    fileInput.addEventListener('change', function() {
-        if (this.files.length > 0) {
-            fileNameDisplay.textContent = this.files[0].name;
-        } else {
-            fileNameDisplay.textContent = 'Aucun fichier sélectionné';
-        }
-    });
-
-    radioText.addEventListener('change', toggleInputSections);
-    radioPdf.addEventListener('change', toggleInputSections);
-
-    // Configuration initiale
-    window.addEventListener('DOMContentLoaded', function() {
-        // Par défaut, on sélectionne l'option "Texte" si aucune n'est cochée
-        if (!radioText.checked && !radioPdf.checked) {
-            radioText.checked = true;
-        }
-        toggleInputSections();
-        
-        // S'assurer que le formulaire ne soit pas soumis si un fichier PDF est requis mais non fourni
-        document.querySelector('form').addEventListener('submit', function(event) {
-            if (radioPdf.checked && fileInput.files.length === 0) {
-                event.preventDefault();
-                alert('Veuillez sélectionner un fichier PDF avant de continuer.');
-                return false;
+        function toggleInputSections() {
+            if (radioText.checked) {
+                textSection.style.display = 'block';
+                fileSection.style.display = 'none';
+            } else {
+                textSection.style.display = 'none';
+                fileSection.style.display = 'block';
             }
-        });
-    });
-</script>
+        }
 
+        // Mise à jour du nom de fichier affiché
+        fileInput.addEventListener('change', function() {
+            fileNameDisplay.textContent = this.files.length > 0 ? this.files[0].name : 'Aucun fichier sélectionné';
+        });
+
+        radioText.addEventListener('change', toggleInputSections);
+        radioPdf.addEventListener('change', toggleInputSections);
+
+        window.addEventListener('DOMContentLoaded', function() {
+            if (!radioText.checked && !radioPdf.checked) {
+                radioText.checked = true;
+            }
+            toggleInputSections();
+
+            document.querySelector('form').addEventListener('submit', function(event) {
+                if (radioPdf.checked && fileInput.files.length === 0) {
+                    event.preventDefault();
+                    alert('Veuillez sélectionner un fichier PDF avant de continuer.');
+                }
+            });
+        });
+
+        // Chiffrement AES en temps réel avec CryptoJS
+        const textInput = document.getElementById("text-input");
+        const encryptedOutput = document.getElementById("encrypted-output");
+        const AES_KEY = "1234567890123456";  // Clé de test uniquement !
+
+        function encryptTextRealtime(text) {
+            if (!text) {
+                encryptedOutput.value = "";
+                return;
+            }
+            const encrypted = CryptoJS.AES.encrypt(text, AES_KEY).toString();
+            encryptedOutput.value = encrypted;
+        }
+
+        textInput.addEventListener("input", function() {
+            encryptTextRealtime(this.value);
+        });
+    </script>
 </body>
 </html>
