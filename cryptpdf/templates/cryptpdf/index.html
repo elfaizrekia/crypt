@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -11,16 +12,18 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
+            padding: 20px 0;
         }
 
         .form-container {
             background-color: #fffaf5;
             border-radius: 12px;
             padding: 30px;
-            width: 400px;
+            width: 500px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
         }
 
         h1 {
@@ -150,10 +153,56 @@
             font-weight: 600;
         }
 
-        #encrypted-output {
+        .encrypted-output {
             margin-top: 10px;
             height: 100px;
             background-color: #f0f8ff;
+            width: 100%;
+        }
+
+        #preview-section {
+            margin-top: 10px;
+        }
+
+        .key-section {
+            margin-top: 15px;
+            background-color: #f0f8ff;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #d0e1f9;
+        }
+
+        .key-container {
+            max-height: 150px;
+            overflow-y: auto;
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 8px;
+            margin-top: 5px;
+            font-family: monospace;
+            font-size: 12px;
+            word-break: break-all;
+        }
+
+        .download-key-btn {
+            margin-top: 10px;
+            padding: 6px 12px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: background-color 0.2s;
+        }
+
+        .download-key-btn:hover {
+            background-color: #45a049;
+        }
+
+        .hide {
+            display: none;
         }
     </style>
 </head>
@@ -177,17 +226,26 @@
 
             <label for="method">Méthode de chiffrement:</label>
             <select id="method" name="method">
-                <option value="aes" selected>AES</option>
-                <option value="algo2">Algo2</option>
-                <option value="algo3">Algo3</option>
+                <option value="aes" {% if form.cleaned_data.method == 'aes' %}selected{% endif %}>AES</option>
+                <option value="rsa" {% if form.cleaned_data.method == 'rsa' %}selected{% endif %}>RSA</option>
+                <option value="algo3" {% if form.cleaned_data.method == 'algo3' %}selected{% endif %}>Algo3</option>
             </select>
 
             <div id="text-input-section" class="input-section">
                 <label for="text-input">Texte à chiffrer:</label>
                 <textarea id="text-input" name="text" placeholder="Entrez le texte à chiffrer ici">{{ form.text.value }}</textarea>
 
-                <label for="encrypted-output">Texte chiffré :</label>
-                <textarea id="encrypted-output" readonly placeholder="Texte chiffré s'affichera ici..."></textarea>
+                <div id="preview-section">
+                    <div id="aes-preview-section">
+                        <label for="encrypted-output-aes">Aperçu du chiffrement (AES):</label>
+                        <textarea id="encrypted-output-aes" class="encrypted-output" readonly placeholder="Aperçu du texte chiffré..."></textarea>
+                    </div>
+                    
+                    <div id="rsa-preview-section" class="hide">
+                        <label for="encrypted-output-rsa">Aperçu du chiffrement (RSA):</label>
+                        <textarea id="encrypted-output-rsa" class="encrypted-output" readonly placeholder="Aperçu du texte chiffré..."></textarea>
+                    </div>
+                </div>
             </div>
 
             <div id="file-input-section" class="input-section">
@@ -209,13 +267,11 @@
         </form>
 
         {% if download_url %}
-            <div class="result">
-                <p><strong>Fichier chiffré :</strong> <a href="{{ download_url }}">Télécharger</a></p>
-                <p><strong>Clé AES :</strong> {{ key }}</p>
-            </div>
+        <div class="result">
+            <p><strong>Fichier chiffré :</strong> <a href="{{ download_url }}">Télécharger</a></p>
+        </div>
         {% endif %}
     </div>
-
     <script>
         const radioText = document.getElementById('type-text');
         const radioPdf = document.getElementById('type-pdf');
@@ -223,7 +279,28 @@
         const fileSection = document.getElementById('file-input-section');
         const fileInput = document.getElementById('pdf-file');
         const fileNameDisplay = document.getElementById('file-name');
+        const methodSelect = document.getElementById('method');
+        const textInput = document.getElementById("text-input");
+        const aesPreviewSection = document.getElementById("aes-preview-section");
+        const rsaPreviewSection = document.getElementById("rsa-preview-section");
+        const encryptedOutputAes = document.getElementById("encrypted-output-aes");
+        const encryptedOutputRsa = document.getElementById("encrypted-output-rsa");
 
+        // Clés pour l'aperçu uniquement (NE PAS utiliser en production)
+        const AES_KEY = "1234567890123456";  // Clé de test uniquement pour l'aperçu
+        
+        // Clés de test uniquement pour l'aperçu RSA (à ne pas utiliser en production!)
+        const RSA_PUBLIC_KEY = `-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzFL8SzNgL2CLcg22yKL6
+rO5f/IbMVmFXbpFSgHRhH7x32v0n7adIKSjR3v3swNqZyaLAfH7TpkzlIES8JqtX
+uzRSWsL+CDlBx9JKQVQmGGQM9gUBF8B3cUZ0WSZ+wJc2MwLJfGLHnMUGrFQrFPUI
+8BAPFwJ3YfuHXISKjVvlk9hDfqSwPR1tYRwdEnFWpDwr9lWGGQTDDLnUQESiWiYq
+J03BgJBR5kUTq9cQ/0vTWRmTGfKs5Xybu3BI7HUXpgOQxnx+lg9H122J8j/V/FMO
+QlDVsN6cfOH9nOF3jJUyYNsYK7YvRrPpGY5PRpP8MqtReNBiZRRmjQZpJkyCIEkA
+nQIDAQAB
+-----END PUBLIC KEY-----`;
+
+        // Gestion de l'affichage des sections selon le type d'entrée
         function toggleInputSections() {
             if (radioText.checked) {
                 textSection.style.display = 'block';
@@ -234,44 +311,119 @@
             }
         }
 
+        // Gestion de l'aperçu de chiffrement
+        function togglePreviewVisibility() {
+            const method = methodSelect.value;
+            
+            if (!radioText.checked) {
+                aesPreviewSection.style.display = 'none';
+                rsaPreviewSection.style.display = 'none';
+                return;
+            }
+            
+            if (method === 'aes') {
+                aesPreviewSection.style.display = 'block';
+                rsaPreviewSection.style.display = 'none';
+                encryptTextRealtimeAES(textInput.value);
+            } else if (method === 'rsa') {
+                aesPreviewSection.style.display = 'none';
+                rsaPreviewSection.style.display = 'block';
+                encryptTextRealtimeRSA(textInput.value);
+            } else {
+                aesPreviewSection.style.display = 'none';
+                rsaPreviewSection.style.display = 'none';
+            }
+        }
+
+        // Fonction de chiffrement AES en temps réel pour l'aperçu
+      function encryptTextRealtimeAES(text) {
+    if (!text) {
+        encryptedOutputAes.value = "";
+        return;
+    }
+    try {
+        // Créer la clé et l'IV correctement formatés pour CryptoJS
+        const keyWordArray = CryptoJS.enc.Utf8.parse(AES_KEY);
+        const iv = CryptoJS.lib.WordArray.random(16);
+        
+        // Configurer les options de chiffrement
+        const encrypted = CryptoJS.AES.encrypt(text, keyWordArray, {
+            iv: iv,
+            padding: CryptoJS.pad.Pkcs7,
+            mode: CryptoJS.mode.CBC
+        });
+        
+        // Afficher le résultat encodé en Base64
+        encryptedOutputAes.value = encrypted.toString();
+    } catch (error) {
+        console.error("Erreur CryptoJS:", error);
+        encryptedOutputAes.value = "Erreur lors du chiffrement d'aperçu AES.";
+    }
+}
+
+
+        // Fonction pour chiffrer en RSA côté client (aperçu uniquement)
+        function encryptTextRealtimeRSA(text) {
+            if (!text) {
+                encryptedOutputRsa.value = "";
+                return;
+            }
+            
+            try {
+                // Dans un environnement réel, on utiliserait la bibliothèque JSEncrypt ou similaire
+                // Pour l'aperçu, on simule simplement un résultat chiffré
+                const simulatedEncrypted = "RSA:" + btoa(text).split('').reverse().join('');
+                encryptedOutputRsa.value = simulatedEncrypted;
+            } catch (error) {
+                encryptedOutputRsa.value = "Erreur lors du chiffrement d'aperçu RSA.";
+            }
+        }
+
         // Mise à jour du nom de fichier affiché
         fileInput.addEventListener('change', function() {
             fileNameDisplay.textContent = this.files.length > 0 ? this.files[0].name : 'Aucun fichier sélectionné';
         });
 
-        radioText.addEventListener('change', toggleInputSections);
-        radioPdf.addEventListener('change', toggleInputSections);
+        radioText.addEventListener('change', function() {
+            toggleInputSections();
+            togglePreviewVisibility();
+        });
+        
+        radioPdf.addEventListener('change', function() {
+            toggleInputSections();
+            togglePreviewVisibility();
+        });
+        
+        methodSelect.addEventListener('change', togglePreviewVisibility);
+
+        // Mise à jour de l'événement d'entrée du texte
+        textInput.addEventListener("input", function() {
+            const method = methodSelect.value;
+            if (method === 'aes') {
+                encryptTextRealtimeAES(this.value);
+            } else if (method === 'rsa') {
+                encryptTextRealtimeRSA(this.value);
+            }
+        });
 
         window.addEventListener('DOMContentLoaded', function() {
             if (!radioText.checked && !radioPdf.checked) {
                 radioText.checked = true;
             }
             toggleInputSections();
+            togglePreviewVisibility();
 
             document.querySelector('form').addEventListener('submit', function(event) {
                 if (radioPdf.checked && fileInput.files.length === 0) {
                     event.preventDefault();
                     alert('Veuillez sélectionner un fichier PDF avant de continuer.');
                 }
+                
+                if (radioText.checked && textInput.value.trim() === '') {
+                    event.preventDefault();
+                    alert('Veuillez entrer un texte à chiffrer.');
+                }
             });
-        });
-
-        // Chiffrement AES en temps réel avec CryptoJS
-        const textInput = document.getElementById("text-input");
-        const encryptedOutput = document.getElementById("encrypted-output");
-        const AES_KEY = "1234567890123456";  // Clé de test uniquement !
-
-        function encryptTextRealtime(text) {
-            if (!text) {
-                encryptedOutput.value = "";
-                return;
-            }
-            const encrypted = CryptoJS.AES.encrypt(text, AES_KEY).toString();
-            encryptedOutput.value = encrypted;
-        }
-
-        textInput.addEventListener("input", function() {
-            encryptTextRealtime(this.value);
         });
     </script>
 </body>
