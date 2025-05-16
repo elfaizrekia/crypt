@@ -8,7 +8,7 @@ class ChiffrementForm(forms.Form):
     
     METHOD_CHOICES = [
         ('aes', 'AES'),
-        ('algo2', 'Algo2'),
+        ('rsa', 'RSA'),
         ('algo3', 'Algo3'),
     ]
     

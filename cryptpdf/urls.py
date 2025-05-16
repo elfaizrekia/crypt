@@ -10,7 +10,7 @@ urlpatterns = [
     
     path('', views.chiffrement_view, name='chiffrement_view'),
     path('download/<str:filename>/', views.download_file, name='download_file'), 
-     
+    path('download-key/', views.download_key, name='download_key'),
 
 ]
 if settings.DEBUG:
