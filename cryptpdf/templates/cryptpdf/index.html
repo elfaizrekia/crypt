@@ -480,7 +480,7 @@
                         <select id="method" name="method">
                             <option value="aes" {% if form.cleaned_data.method == 'aes' %}selected{% endif %}>AES - Advanced Encryption Standard</option>
                             <option value="rsa" {% if form.cleaned_data.method == 'rsa' %}selected{% endif %}>RSA - Rivest-Shamir-Adleman</option>
-                            <option value="algo3" {% if form.cleaned_data.method == 'algo3' %}selected{% endif %}>Algo3 - Algorithme personnalisé</option>
+                            <option value="3des" {% if form.cleaned_data.method == '3des' %}selected{% endif %}>3DES - Triple Data Encryption Standard</option>
                         </select>
                     </div>
                 </div>
@@ -499,6 +499,12 @@
                             <div class="preview-title">Aperçu du chiffrement RSA</div>
                             <textarea id="encrypted-output-rsa" class="preview-output" readonly placeholder="L'aperçu du texte chiffré apparaîtra ici..."></textarea>
                         </div>
+
+                        <div id="des-preview-section" class="hide">
+                            <div class="preview-title">Aperçu du chiffrement 3DES</div>
+                            <textarea id="encrypted-output-des" class="preview-output" readonly placeholder="L'aperçu du texte chiffré apparaîtra ici..."></textarea>
+                        </div>
+
                     </div>
                 </div>
 
@@ -546,6 +552,8 @@
         const encryptedOutputAes = document.getElementById("encrypted-output-aes");
         const encryptedOutputRsa = document.getElementById("encrypted-output-rsa");
         const fileUploadArea = document.querySelector('.file-upload-area');
+        const desPreviewSection = document.getElementById("des-preview-section");
+        const encryptedOutputDes = document.getElementById("encrypted-output-des");
 
         // Clés pour l'aperçu uniquement
         const AES_KEY = "1234567890123456";
@@ -591,14 +599,22 @@
             if (method === 'aes') {
                 aesPreviewSection.style.display = 'block';
                 rsaPreviewSection.style.display = 'none';
+                desPreviewSection.style.display = 'none';
                 encryptTextRealtimeAES(textInput.value);
             } else if (method === 'rsa') {
                 aesPreviewSection.style.display = 'none';
                 rsaPreviewSection.style.display = 'block';
+                desPreviewSection.style.display = 'none';
                 encryptTextRealtimeRSA(textInput.value);
+            } else if (method === '3des') {
+                aesPreviewSection.style.display = 'none';
+                rsaPreviewSection.style.display = 'none';
+                desPreviewSection.style.display = 'block';
+                encryptTextRealtime3DES(textInput.value);
             } else {
                 aesPreviewSection.style.display = 'none';
                 rsaPreviewSection.style.display = 'none';
+                desPreviewSection.style.display = 'none';
             }
         }
 
@@ -639,6 +655,30 @@
                 encryptedOutputRsa.value = "Erreur lors du chiffrement d'aperçu RSA.";
             }
         }
+
+        // Fonction de chiffrement 3DES real time
+        function encryptTextRealtime3DES(text) {
+            if (!text) {
+                encryptedOutputDes.value = "";
+                return;
+            }
+            try {
+                const key = CryptoJS.enc.Utf8.parse("123456789012345678901234"); // 24 caractères
+                const iv = CryptoJS.enc.Utf8.parse("12345678"); // 8 caractères pour 3DES
+        
+                const encrypted = CryptoJS.TripleDES.encrypt(text, key, {
+                    iv: iv,
+                    mode: CryptoJS.mode.CBC,
+                    padding: CryptoJS.pad.Pkcs7
+                });
+
+                encryptedOutputDes.value = encrypted.toString();
+            } catch (error) {
+                console.error("Erreur CryptoJS:", error);
+                encryptedOutputDes.value = "Erreur lors du chiffrement d'aperçu 3DES.";
+            }
+        }
+
 
         // Gestion du drag & drop
         fileUploadArea.addEventListener('dragover', (e) => {
@@ -690,6 +730,10 @@
                 encryptTextRealtimeAES(this.value);
             } else if (method === 'rsa') {
                 encryptTextRealtimeRSA(this.value);
+            } else if (method === 'rsa') {
+                encryptTextRealtimeRSA(this.value);
+            } else if (method === '3des') {
+                encryptTextRealtime3DES(this.value);
             }
         });
 

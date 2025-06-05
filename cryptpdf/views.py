@@ -9,6 +9,8 @@ from .forms import ChiffrementForm
 from django.urls import reverse
 import json
 import base64
+from .utils import generate_key, aes_encrypt, save_encrypted_file, generate_rsa_key_pair, rsa_encrypt, encrypt_3des, decrypt_3des
+
 
 def chiffrement_view(request):
     download_url = None
@@ -59,6 +61,24 @@ def chiffrement_view(request):
                     file_path, _ = save_encrypted_file(pdf_file, public_key, method='rsa')
                     filename = os.path.basename(file_path)
                     download_url = reverse('download_file', args=[filename])
+
+            #Traitement 3DES
+            elif method == '3des':
+                if input_type == 'text':
+                    text = form.cleaned_data['text'].encode('utf-8')
+                    encrypted_data, key, iv = encrypt_3des(text)
+                    filename = f"encrypted_text_{uuid.uuid4().hex}.3des"
+                    path = os.path.join(settings.MEDIA_ROOT, "encrypted", filename)
+                    os.makedirs(os.path.dirname(path), exist_ok=True)
+                    with open(path, "wb") as f:
+                        f.write(encrypted_data)
+                    download_url = reverse('download_file', args=[filename])
+                elif input_type == 'file' and 'pdf_file' in request.FILES:
+                    pdf_file = request.FILES['pdf_file']
+                    file_path, _ = save_encrypted_file(pdf_file, (key, iv), method='3des')
+                    filename = os.path.basename(file_path)
+                    download_url = reverse('download_file', args=[filename])
+    
     else:
         form = ChiffrementForm()
 
@@ -76,6 +96,11 @@ def chiffrement_view(request):
         if private_key and public_key:
             context['private_key'] = private_key.decode('utf-8')
             context['public_key'] = public_key.decode('utf-8')
+    
+    elif method == '3des' and key and iv:
+        context['key'] = key.hex()
+        context['iv'] = iv.hex()
+
 
     return render(request, "cryptpdf/index.html", context)
 
@@ -92,6 +117,11 @@ def save_encrypted_file(file, key, method='aes'):
     elif method == 'rsa':
         encrypted_content = rsa_encrypt(file_content, key)
         ext = '.rsa'
+    elif method == '3des':
+        key, iv = key  # tuple
+        encrypted_content, _, _ = encrypt_3des(file_content, key, iv)
+        ext = '.3des'
+
     else:
         raise ValueError(f"Méthode de chiffrement non prise en charge: {method}")
     

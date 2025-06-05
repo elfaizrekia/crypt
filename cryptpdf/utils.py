@@ -1,5 +1,5 @@
 import os
-from Crypto.Cipher import AES, PKCS1_OAEP
+from Crypto.Cipher import AES, PKCS1_OAEP, DES3
 from Crypto.PublicKey import RSA
 from Crypto.Random import get_random_bytes
 from Crypto.Util.Padding import pad, unpad
@@ -72,6 +72,22 @@ def rsa_decrypt(ciphertext, private_key):
     # Déchiffrer les données avec AES et la clé de session
     cipher_aes = AES.new(session_key, AES.MODE_CBC, iv)
     return unpad(cipher_aes.decrypt(encrypted_data), AES.block_size)
+
+def encrypt_3des(data: bytes, key: bytes = None, iv: bytes = None):
+    if key is None:
+        key = DES3.adjust_key_parity(get_random_bytes(24))
+    if iv is None:
+        iv = get_random_bytes
+
+    cipher = DES3.new(key, DES3.MODE_CBC, iv)
+    ciphertext = cipher.encrypt(pad(data, DES3.block_size))
+    return ciphertext, key, iv
+
+def decrypt_3des(ciphertext: bytes, key: bytes, iv: bytes):
+    cipher = DES3.new(key, DES3.MODE_CBC, iv)
+    plaintext = unpad(cipher.decrypt(ciphertext), DES3.block_size)
+    return plaintext
+
 
 def save_encrypted_file(file, key, method='aes'):
     """
