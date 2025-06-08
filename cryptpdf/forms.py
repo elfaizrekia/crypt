@@ -9,7 +9,7 @@ class ChiffrementForm(forms.Form):
     METHOD_CHOICES = [
         ('aes', 'AES'),
         ('rsa', 'RSA'),
-        ('algo3', 'Algo3'),
+        ('3des', '3DES'),
     ]
     
     input_type = forms.ChoiceField(choices=INPUT_CHOICES, initial='text')

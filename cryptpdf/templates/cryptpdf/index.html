@@ -495,12 +495,12 @@
                             <textarea id="encrypted-output-aes" class="preview-output" readonly placeholder="L'aperçu du texte chiffré apparaîtra ici..."></textarea>
                         </div>
                         
-                        <div id="rsa-preview-section" class="hide">
+                        <div id="rsa-preview-section"><!-- class="hide" deleted-->
                             <div class="preview-title">Aperçu du chiffrement RSA</div>
                             <textarea id="encrypted-output-rsa" class="preview-output" readonly placeholder="L'aperçu du texte chiffré apparaîtra ici..."></textarea>
                         </div>
 
-                        <div id="des-preview-section" class="hide">
+                        <div id="des-preview-section"><!-- class="hide" deleted-->
                             <div class="preview-title">Aperçu du chiffrement 3DES</div>
                             <textarea id="encrypted-output-des" class="preview-output" readonly placeholder="L'aperçu du texte chiffré apparaîtra ici..."></textarea>
                         </div>
@@ -593,6 +593,7 @@
             if (!radioText.checked) {
                 aesPreviewSection.style.display = 'none';
                 rsaPreviewSection.style.display = 'none';
+                desPreviewSection.style.display = 'none';
                 return;
             }
             
@@ -649,7 +650,7 @@
             }
             
             try {
-                const simulatedEncrypted = "RSA:" + btoa(text).split('').reverse().join('');
+                const simulatedEncrypted = btoa(text).split('').reverse().join(''); // deleted "RSA:" +
                 encryptedOutputRsa.value = simulatedEncrypted;
             } catch (error) {
                 encryptedOutputRsa.value = "Erreur lors du chiffrement d'aperçu RSA.";
@@ -728,8 +729,6 @@
             const method = methodSelect.value;
             if (method === 'aes') {
                 encryptTextRealtimeAES(this.value);
-            } else if (method === 'rsa') {
-                encryptTextRealtimeRSA(this.value);
             } else if (method === 'rsa') {
                 encryptTextRealtimeRSA(this.value);
             } else if (method === '3des') {

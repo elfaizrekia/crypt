@@ -10,6 +10,9 @@ from django.urls import reverse
 import json
 import base64
 from .utils import generate_key, aes_encrypt, save_encrypted_file, generate_rsa_key_pair, rsa_encrypt, encrypt_3des, decrypt_3des
+from Crypto.Cipher import DES3
+from Crypto.Random import get_random_bytes
+
 
 
 def chiffrement_view(request):
@@ -75,6 +78,9 @@ def chiffrement_view(request):
                     download_url = reverse('download_file', args=[filename])
                 elif input_type == 'file' and 'pdf_file' in request.FILES:
                     pdf_file = request.FILES['pdf_file']
+                    # Générer la clé et l'IV avant le chiffrement
+                    key = DES3.adjust_key_parity(get_random_bytes(24))
+                    iv = get_random_bytes(8)
                     file_path, _ = save_encrypted_file(pdf_file, (key, iv), method='3des')
                     filename = os.path.basename(file_path)
                     download_url = reverse('download_file', args=[filename])
@@ -189,6 +195,9 @@ def preview_encrypt(request):
             elif method == 'rsa':
                 _, public_key = generate_rsa_key_pair()
                 encrypted = rsa_encrypt(text.encode('utf-8'), public_key)
+                result = base64.b64encode(encrypted).decode('utf-8')
+            elif method == '3des':
+                encrypted, _, _ = encrypt_3des(text.encode('utf-8'))
                 result = base64.b64encode(encrypted).decode('utf-8')
                 
             return JsonResponse({'encrypted': result})

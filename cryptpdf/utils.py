@@ -75,9 +75,9 @@ def rsa_decrypt(ciphertext, private_key):
 
 def encrypt_3des(data: bytes, key: bytes = None, iv: bytes = None):
     if key is None:
-        key = DES3.adjust_key_parity(get_random_bytes(24))
+        key = DES3.adjust_key_parity(get_random_bytes(24)) # 24 octets pour 3DES
     if iv is None:
-        iv = get_random_bytes
+        iv = get_random_bytes(8)
 
     cipher = DES3.new(key, DES3.MODE_CBC, iv)
     ciphertext = cipher.encrypt(pad(data, DES3.block_size))
