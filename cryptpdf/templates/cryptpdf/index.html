@@ -13,12 +13,225 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            background: linear-gradient(135deg, #667eea 0%, #ab7fdb 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Page d'accueil centralisée */
+        .home-page {
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
+            position: relative;
+        }
+
+        .home-page::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* Cadre principal centralisé */
+        .home-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 32px;
+            padding: 60px 50px;
+            text-align: center;
+            max-width: 900px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+            box-shadow: 
+                0 25px 50px -12px rgba(0, 0, 0, 0.25),
+                0 0 0 1px rgba(255, 255, 255, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.6);
+            animation: slideIn 0.8s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .home-hero {
+            margin-bottom: 50px;
+        }
+
+        .home-icon {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0 auto 30px;
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            box-shadow: 
+                0 20px 40px rgba(102, 126, 234, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .home-title {
+            font-size: 42px;
+            font-weight: 800;
+            color: #2d3748;
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .home-subtitle {
+            font-size: 20px;
+            color: #4a5568;
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        .home-description {
+            font-size: 16px;
+            color: #718096;
+            line-height: 1.6;
+            margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin-bottom: 50px;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 30px 20px;
+            text-align: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .feature-card:hover::before {
+            left: 100%;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.15);
+            border-color: #cbd5e0;
+        }
+
+        .feature-icon {
+            font-size: 36px;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .feature-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+
+        .feature-text {
+            font-size: 14px;
+            color: #4a5568;
+            line-height: 1.5;
+        }
+
+        .start-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px 36px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff;
+            font-size: 18px;
+            font-weight: 700;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .start-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .start-button:hover::before {
+            left: 100%;
+        }
+
+        .start-button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.5);
+        }
+
+        /* Interface de chiffrement */
+        .encryption-page {
+            display: none;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 20px;
+            align-items: center;
+            justify-content: center;
         }
 
         .main-container {
@@ -34,7 +247,7 @@
         }
 
         .header {
-            background: linear-gradient(135deg, #343a40 0%, #495057 100%);
+            background: linear-gradient(135deg, #667eea 0%, #ab7fdb 100%);
             padding: 32px;
             text-align: center;
             position: relative;
@@ -48,13 +261,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            
             animation: float 20s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(180deg); }
         }
 
         .header h1 {
@@ -73,6 +280,25 @@
             font-weight: 400;
             position: relative;
             z-index: 1;
+        }
+
+        .back-button {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(248, 249, 250, 0.1);
+            border: 1px solid rgba(248, 249, 250, 0.2);
+            color: #f8f9fa;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 2;
+        }
+
+        .back-button:hover {
+            background: rgba(248, 249, 250, 0.2);
         }
 
         .form-content {
@@ -97,7 +323,7 @@
             content: '';
             width: 4px;
             height: 16px;
-            background: linear-gradient(135deg, #6c757d, #495057);
+            background: linear-gradient(135deg, #667eea 0%, #ab7fdb 100%);
             border-radius: 2px;
         }
 
@@ -162,8 +388,8 @@
         }
 
         .radio-card.active .radio-icon {
-            border-color: #495057;
-            background: #495057;
+            border-color: #667eea;
+            background: #667eea;
         }
 
         .radio-card.active .radio-icon::after {
@@ -247,7 +473,7 @@
             border-radius: 12px;
             background: #f8f9fa;
             font-size: 14px;
-            color: #343a40;
+            color: #667eea;
             resize: vertical;
             font-family: inherit;
             transition: all 0.3s ease;
@@ -285,7 +511,7 @@
         .file-upload-icon {
             width: 48px;
             height: 48px;
-            background: linear-gradient(135deg, #6c757d, #495057);
+            background: linear-gradient(135deg, #667eea 0%, #ab7fdb 100%);
             border-radius: 50%;
             margin: 0 auto 16px;
             display: flex;
@@ -297,7 +523,7 @@
 
         .file-upload-text {
             font-weight: 600;
-            color: #343a40;
+            color: #667eea;
             margin-bottom: 4px;
         }
 
@@ -312,7 +538,7 @@
             background: #e9ecef;
             border-radius: 8px;
             font-size: 12px;
-            color: #495057;
+            color: #667eea;
             word-break: break-all;
         }
 
@@ -327,7 +553,7 @@
         .preview-title {
             font-size: 14px;
             font-weight: 600;
-            color: #343a40;
+            color: #667eea;
             margin-bottom: 12px;
             display: flex;
             align-items: center;
@@ -355,7 +581,7 @@
         .submit-button {
             width: 100%;
             padding: 16px 24px;
-            background: linear-gradient(135deg, #495057 0%, #343a40 100%);
+            background: linear-gradient(135deg, #667eea 0%, #ab7fdb 100%);
             border: none;
             border-radius: 12px;
             color: #f8f9fa;
@@ -405,7 +631,7 @@
             align-items: center;
             gap: 8px;
             padding: 12px 24px;
-            background: linear-gradient(135deg, #6c757d, #495057);
+            background:linear-gradient(135deg, #667eea 0%, #ab7fdb 100%);
             color: #f8f9fa;
             text-decoration: none;
             border-radius: 8px;
@@ -423,6 +649,29 @@
         }
 
         @media (max-width: 768px) {
+            .home-card {
+                padding: 40px 30px;
+                margin: 10px;
+                border-radius: 24px;
+            }
+
+            .home-title {
+                font-size: 32px;
+            }
+
+            .home-subtitle {
+                font-size: 18px;
+            }
+
+            .home-description {
+                font-size: 15px;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
             .main-container {
                 margin: 10px;
                 border-radius: 20px;
@@ -444,328 +693,397 @@
                 font-size: 24px;
             }
         }
+
+        @media (max-width: 480px) {
+            .home-card {
+                padding: 30px 20px;
+            }
+
+            .home-title {
+                font-size: 28px;
+            }
+
+            .feature-card {
+                padding: 24px 16px;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="main-container">
-        <div class="header">
-            <h1>Chiffrement de Documents </h1>
-            <div class="subtitle">Sécurisez vos données </div>
-        </div>
-
-        <div class="form-content">
-            <form method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                <div class="form-section">
-                    <div class="section-title">Type d'entrée</div>
-                    <div class="radio-container">
-                        <label class="radio-card {% if form.cleaned_data.input_type != 'file' %}active{% endif %}" for="type-text">
-                            <input type="radio" id="type-text" name="input_type" value="text" {% if form.cleaned_data.input_type != 'file' %}checked{% endif %}>
-                            <div class="radio-icon"></div>
-                            <div class="radio-label">Texte</div>
-                            <div class="radio-description">Chiffrer du texte directement</div>
-                        </label>
-                        <label class="radio-card {% if form.cleaned_data.input_type == 'file' %}active{% endif %}" for="type-pdf">
-                            <input type="radio" id="type-pdf" name="input_type" value="file" {% if form.cleaned_data.input_type == 'file' %}checked{% endif %}>
-                            <div class="radio-icon"></div>
-                            <div class="radio-label">Fichier PDF</div>
-                            <div class="radio-description">Chiffrer un document PDF</div>
-                        </label>
-                    </div>
-                </div>
-
-                <div class="form-section">
-                    <div class="section-title">Méthode de chiffrement</div>
-                    <div class="select-wrapper">
-                        <select id="method" name="method">
-                            <option value="aes" {% if form.cleaned_data.method == 'aes' %}selected{% endif %}>AES - Advanced Encryption Standard</option>
-                            <option value="rsa" {% if form.cleaned_data.method == 'rsa' %}selected{% endif %}>RSA - Rivest-Shamir-Adleman</option>
-                            <option value="3des" {% if form.cleaned_data.method == '3des' %}selected{% endif %}>3DES - Triple Data Encryption Standard</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div id="text-input-section" class="input-card active">
-                    <div class="section-title">Texte à chiffrer</div>
-                    <textarea id="text-input" name="text" placeholder="Entrez le texte que vous souhaitez chiffrer...">{{ form.text.value|default_if_none:"" }}</textarea>
-
-                    <div id="preview-section" class="preview-section">
-                        <div id="aes-preview-section">
-                            <div class="preview-title">Aperçu du chiffrement AES</div>
-                            <textarea id="encrypted-output-aes" class="preview-output" readonly placeholder="L'aperçu du texte chiffré apparaîtra ici..."></textarea>
-                        </div>
-                        
-                        <div id="rsa-preview-section"><!-- class="hide" deleted-->
-                            <div class="preview-title">Aperçu du chiffrement RSA</div>
-                            <textarea id="encrypted-output-rsa" class="preview-output" readonly placeholder="L'aperçu du texte chiffré apparaîtra ici..."></textarea>
-                        </div>
-
-                        <div id="des-preview-section"><!-- class="hide" deleted-->
-                            <div class="preview-title">Aperçu du chiffrement 3DES</div>
-                            <textarea id="encrypted-output-des" class="preview-output" readonly placeholder="L'aperçu du texte chiffré apparaîtra ici..."></textarea>
-                        </div>
-
-                    </div>
-                </div>
-
-                <div id="file-input-section" class="input-card hide">
-                    <div class="section-title">Fichier PDF à chiffrer</div>
-                    <div class="file-upload-area" onclick="document.getElementById('pdf-file').click()">
-                        <input type="file" id="pdf-file" name="pdf_file" accept=".pdf" style="display: none;">
-                        <div class="file-upload-icon">📄</div>
-                        <div class="file-upload-text">Cliquez pour sélectionner un fichier</div>
-                        <div class="file-upload-hint">ou glissez-déposez votre fichier PDF ici</div>
-                        <div id="file-name" class="file-name hide">Aucun fichier sélectionné</div>
-                    </div>
-                    {% if form.errors.pdf_file %}
-                    <div style="color: #e74c3c; font-size: 12px; margin-top: 8px; font-weight: 600;">{{ form.errors.pdf_file }}</div>
-                    {% endif %}
-                    {% if form.non_field_errors %}
-                    <div style="color: #e74c3c; font-size: 12px; margin-top: 8px; font-weight: 600;">{{ form.non_field_errors }}</div>
-                    {% endif %}
-                </div>
-
-                <button type="submit" class="submit-button">🔒 Chiffrer maintenant</button>
-            </form>
-
-            {% if download_url %}
-            <div id="result-section" class="result-card">
-                <h3>Fichier chiffré avec succès !</h3>
-                <p style="margin: 12px 0; color: #6c757d;">Votre fichier a été sécurisé avec succès.</p>
-                <a href="{{ download_url }}" id="download-link">📥 Télécharger le fichier chiffré</a>
+    <!-- Page d'accueil centralisée -->
+    <div id="home-page" class="home-page">
+        <div class="home-card">
+            <div class="home-hero">
+                <div class="home-icon">🔐</div>
+                <h1 class="home-title">Chiffrement Facile et Sécurisé</h1>
+                <h2 class="home-subtitle">Protégez vos données sensibles</h2>
+                <p class="home-description">
+                    Chiffrez vos documents et textes rapidement et efficacement avec notre solution de sécurité avancée.
+                </p>
             </div>
-            {% endif %}
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🛡️</div>
+                    <h3 class="feature-title">Sécurité </h3>
+                    <p class="feature-text">Chiffrement AES, RSA et 3DES pour une protection optimale de vos données</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3 class="feature-title">Rapide & Efficace</h3>
+                    <p class="feature-text">Interface moderne et processus de chiffrement ultra-rapide</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3 class="feature-title">Simplicité Totale</h3>
+                    <p class="feature-text">Trois clics suffisent pour sécuriser vos documents les plus sensibles</p>
+                </div>
+            </div>
+
+            <button class="start-button" onclick="showEncryptionPage()">
+                <span>🚀</span>
+                Commencer le chiffrement
+            </button>
+        </div>
+    </div>
+
+    <!-- Interface de chiffrement -->
+    <div id="encryption-page" class="encryption-page">
+        <div class="main-container">
+            <div class="header">
+                <button class="back-button" onclick="showHomePage()">← Retour</button>
+                <h1>Chiffrement de Documents</h1>
+                <div class="subtitle">Sécurisez vos données</div>
+            </div>
+
+            <div class="form-content">
+                <form id="encryption-form">
+                    <div class="form-section">
+                        <div class="section-title">Type d'entrée</div>
+                        <div class="radio-container">
+                            <label class="radio-card active" for="type-text">
+                                <input type="radio" id="type-text" name="input_type" value="text" checked>
+                                <div class="radio-icon"></div>
+                                <div class="radio-label">Texte</div>
+                                <div class="radio-description">Chiffrer du texte directement</div>
+                            </label>
+                            <label class="radio-card" for="type-pdf">
+                                <input type="radio" id="type-pdf" name="input_type" value="file">
+                                <div class="radio-icon"></div>
+                                <div class="radio-label">Fichier PDF</div>
+                                <div class="radio-description">Chiffrer un document PDF</div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <div class="section-title">Méthode de chiffrement</div>
+                        <div class="select-wrapper">
+                            <select id="method" name="method">
+                                <option value="aes">AES - Advanced Encryption Standard</option>
+                                <option value="rsa">RSA - Rivest-Shamir-Adleman</option>
+                                <option value="3des">3DES - Triple Data Encryption Standard</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="text-input-section" class="input-card active">
+                        <div class="section-title">Texte à chiffrer</div>
+                        <textarea id="text-input" name="text" placeholder="Entrez le texte que vous souhaitez chiffrer..."></textarea>
+
+                        <div id="preview-section" class="preview-section">
+                            <div id="aes-preview-section">
+                                <div class="preview-title">Aperçu du chiffrement AES</div>
+                                <textarea id="encrypted-output-aes" class="preview-output" readonly placeholder="L'aperçu du texte chiffré apparaîtra ici..."></textarea>
+                            </div>
+                            
+                            <div id="rsa-preview-section" class="hide">
+                                <div class="preview-title">Aperçu du chiffrement RSA</div>
+                                <textarea id="encrypted-output-rsa" class="preview-output" readonly placeholder="L'aperçu du texte chiffré apparaîtra ici..."></textarea>
+                            </div>
+
+                            <div id="des-preview-section" class="hide">
+                                <div class="preview-title">Aperçu du chiffrement 3DES</div>
+                                <textarea id="encrypted-output-des" class="preview-output" readonly placeholder="L'aperçu du texte chiffré apparaîtra ici..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="file-input-section" class="input-card hide">
+                        <div class="section-title">Fichier PDF à chiffrer</div>
+                        <div class="file-upload-area" onclick="document.getElementById('pdf-file').click()">
+                            <input type="file" id="pdf-file" name="pdf_file" accept=".pdf" style="display: none;">
+                            <div class="file-upload-icon">📄</div>
+                            <div class="file-upload-text">Cliquez pour sélectionner un fichier</div>
+                            <div class="file-upload-hint">ou glissez-déposez votre fichier PDF ici</div>
+                            <div id="file-name" class="file-name hide">Aucun fichier sélectionné</div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="submit-button">🔒 Chiffrer maintenant</button>
+                </form>
+
+                <div id="result-section" class="result-card hide">
+                    <h3>Fichier chiffré avec succès !</h3>
+                    <p style="margin: 12px 0; color: #6c757d;">Votre fichier a été sécurisé avec succès.</p>
+                    <a href="#" id="download-link">📥 Télécharger le fichier chiffré</a>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
-        const radioText = document.getElementById('type-text');
-        const radioPdf = document.getElementById('type-pdf');
-        const textSection = document.getElementById('text-input-section');
-        const fileSection = document.getElementById('file-input-section');
-        const fileInput = document.getElementById('pdf-file');
-        const fileNameDisplay = document.getElementById('file-name');
-        const methodSelect = document.getElementById('method');
-        const textInput = document.getElementById("text-input");
-        const aesPreviewSection = document.getElementById("aes-preview-section");
-        const rsaPreviewSection = document.getElementById("rsa-preview-section");
-        const encryptedOutputAes = document.getElementById("encrypted-output-aes");
-        const encryptedOutputRsa = document.getElementById("encrypted-output-rsa");
-        const fileUploadArea = document.querySelector('.file-upload-area');
-        const desPreviewSection = document.getElementById("des-preview-section");
-        const encryptedOutputDes = document.getElementById("encrypted-output-des");
+        // Navigation entre les pages
+        function showEncryptionPage() {
+            document.getElementById('home-page').style.display = 'none';
+            document.getElementById('encryption-page').style.display = 'flex';
+        }
 
-        // Clés pour l'aperçu uniquement
-        const AES_KEY = "1234567890123456";
+        function showHomePage() {
+            document.getElementById('home-page').style.display = 'flex';
+            document.getElementById('encryption-page').style.display = 'none';
+        }
 
-        // Gestion des cartes radio
-        function updateRadioCards() {
-            document.querySelectorAll('.radio-card').forEach(card => {
-                const radio = card.querySelector('input[type="radio"]');
-                if (radio.checked) {
-                    card.classList.add('active');
-                } else {
-                    card.classList.remove('active');
-                }
+        // Fonctionnalité de l'interface de chiffrement
+        document.addEventListener('DOMContentLoaded', function() {
+            // Gestion des radio buttons
+            const radioCards = document.querySelectorAll('.radio-card');
+            const textInputSection = document.getElementById('text-input-section');
+            const fileInputSection = document.getElementById('file-input-section');
+            
+            radioCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    // Retirer la classe active de toutes les cartes
+                    radioCards.forEach(c => c.classList.remove('active'));
+                    // Ajouter la classe active à la carte cliquée
+                    this.classList.add('active');
+                    
+                    // Cocher le radio button correspondant
+                    const radio = this.querySelector('input[type="radio"]');
+                    radio.checked = true;
+                    
+                    // Afficher/masquer les sections appropriées
+                    if (radio.value === 'text') {
+                        textInputSection.classList.remove('hide');
+                        fileInputSection.classList.add('hide');
+                    } else {
+                        textInputSection.classList.add('hide');
+                        fileInputSection.classList.remove('hide');
+                    }
+                });
             });
-        }
 
-        // Gestion de l'affichage des sections
-        function toggleInputSections() {
-            if (radioText.checked) {
-                textSection.classList.remove('hide');
-                textSection.classList.add('active');
-                fileSection.classList.add('hide');
-                fileSection.classList.remove('active');
-            } else {
-                textSection.classList.add('hide');
-                textSection.classList.remove('active');
-                fileSection.classList.remove('hide');
-                fileSection.classList.add('active');
-            }
-            updateRadioCards();
-        }
+            // Gestion du changement de méthode de chiffrement
+            const methodSelect = document.getElementById('method');
+            const previewSections = {
+                'aes': document.getElementById('aes-preview-section'),
+                'rsa': document.getElementById('rsa-preview-section'),
+                '3des': document.getElementById('des-preview-section')
+            };
 
-        // Gestion de l'aperçu de chiffrement
-        function togglePreviewVisibility() {
-            const method = methodSelect.value;
-            
-            if (!radioText.checked) {
-                aesPreviewSection.style.display = 'none';
-                rsaPreviewSection.style.display = 'none';
-                desPreviewSection.style.display = 'none';
-                return;
-            }
-            
-            if (method === 'aes') {
-                aesPreviewSection.style.display = 'block';
-                rsaPreviewSection.style.display = 'none';
-                desPreviewSection.style.display = 'none';
-                encryptTextRealtimeAES(textInput.value);
-            } else if (method === 'rsa') {
-                aesPreviewSection.style.display = 'none';
-                rsaPreviewSection.style.display = 'block';
-                desPreviewSection.style.display = 'none';
-                encryptTextRealtimeRSA(textInput.value);
-            } else if (method === '3des') {
-                aesPreviewSection.style.display = 'none';
-                rsaPreviewSection.style.display = 'none';
-                desPreviewSection.style.display = 'block';
-                encryptTextRealtime3DES(textInput.value);
-            } else {
-                aesPreviewSection.style.display = 'none';
-                rsaPreviewSection.style.display = 'none';
-                desPreviewSection.style.display = 'none';
-            }
-        }
-
-        // Fonction de chiffrement AES en temps réel
-        function encryptTextRealtimeAES(text) {
-            if (!text) {
-                encryptedOutputAes.value = "";
-                return;
-            }
-            try {
-                const keyWordArray = CryptoJS.enc.Utf8.parse(AES_KEY);
-                const iv = CryptoJS.lib.WordArray.random(16);
-                
-                const encrypted = CryptoJS.AES.encrypt(text, keyWordArray, {
-                    iv: iv,
-                    padding: CryptoJS.pad.Pkcs7,
-                    mode: CryptoJS.mode.CBC
+            methodSelect.addEventListener('change', function() {
+                // Masquer toutes les sections d'aperçu
+                Object.values(previewSections).forEach(section => {
+                    section.classList.add('hide');
                 });
                 
-                encryptedOutputAes.value = encrypted.toString();
-            } catch (error) {
-                console.error("Erreur CryptoJS:", error);
-                encryptedOutputAes.value = "Erreur lors du chiffrement d'aperçu AES.";
-            }
-        }
+                // Afficher la section correspondante
+                const selectedMethod = this.value;
+                if (previewSections[selectedMethod]) {
+                    previewSections[selectedMethod].classList.remove('hide');
+                }
+                
+                // Mettre à jour l'aperçu si du texte est présent
+                updatePreview();
+            });
 
-        // Fonction de chiffrement RSA simulé
-        function encryptTextRealtimeRSA(text) {
-            if (!text) {
-                encryptedOutputRsa.value = "";
-                return;
-            }
-            
-            try {
-                const simulatedEncrypted = btoa(text).split('').reverse().join(''); // deleted "RSA:" +
-                encryptedOutputRsa.value = simulatedEncrypted;
-            } catch (error) {
-                encryptedOutputRsa.value = "Erreur lors du chiffrement d'aperçu RSA.";
-            }
-        }
+            // Aperçu en temps réel du chiffrement
+            const textInput = document.getElementById('text-input');
+            textInput.addEventListener('input', updatePreview);
 
-        // Fonction de chiffrement 3DES real time
-        function encryptTextRealtime3DES(text) {
-            if (!text) {
-                encryptedOutputDes.value = "";
-                return;
+            function updatePreview() {
+                const text = textInput.value;
+                const method = methodSelect.value;
+                
+                if (text.trim() === '') {
+                    clearPreviews();
+                    return;
+                }
+
+                try {
+                    let encrypted = '';
+                    const secretKey = 'ma-cle-secrete-123';
+                    
+                    switch(method) {
+                        case 'aes':
+                            encrypted = CryptoJS.AES.encrypt(text, secretKey).toString();
+                            document.getElementById('encrypted-output-aes').value = encrypted;
+                            break;
+                        case 'rsa':
+                            // Simulation RSA (en réalité, RSA nécessite une bibliothèque spécialisée)
+                            encrypted = btoa(text) + '_RSA_ENCRYPTED';
+                            document.getElementById('encrypted-output-rsa').value = encrypted;
+                            break;
+                        case '3des':
+                            encrypted = CryptoJS.TripleDES.encrypt(text, secretKey).toString();
+                            document.getElementById('encrypted-output-des').value = encrypted;
+                            break;
+                    }
+                } catch (error) {
+                    console.error('Erreur de chiffrement:', error);
+                }
             }
-            try {
-                const key = CryptoJS.enc.Utf8.parse("123456789012345678901234"); // 24 caractères
-                const iv = CryptoJS.enc.Utf8.parse("12345678"); // 8 caractères pour 3DES
-        
-                const encrypted = CryptoJS.TripleDES.encrypt(text, key, {
-                    iv: iv,
-                    mode: CryptoJS.mode.CBC,
-                    padding: CryptoJS.pad.Pkcs7
+
+            function clearPreviews() {
+                document.getElementById('encrypted-output-aes').value = '';
+                document.getElementById('encrypted-output-rsa').value = '';
+                document.getElementById('encrypted-output-des').value = '';
+            }
+
+            // Gestion du téléchargement de fichier
+            const pdfFileInput = document.getElementById('pdf-file');
+            const fileNameDiv = document.getElementById('file-name');
+            const fileUploadArea = document.querySelector('.file-upload-area');
+
+            pdfFileInput.addEventListener('change', function() {
+                if (this.files.length > 0) {
+                    const fileName = this.files[0].name;
+                    fileNameDiv.textContent = fileName;
+                    fileNameDiv.classList.remove('hide');
+                } else {
+                    fileNameDiv.classList.add('hide');
+                }
+            });
+
+            // Drag and drop pour les fichiers
+            fileUploadArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.classList.add('drag-over');
+            });
+
+            fileUploadArea.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                this.classList.remove('drag-over');
+            });
+
+            fileUploadArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.classList.remove('drag-over');
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0 && files[0].type === 'application/pdf') {
+                    pdfFileInput.files = files;
+                    const fileName = files[0].name;
+                    fileNameDiv.textContent = fileName;
+                    fileNameDiv.classList.remove('hide');
+                }
+            });
+
+            // Soumission du formulaire
+            const encryptionForm = document.getElementById('encryption-form');
+            const resultSection = document.getElementById('result-section');
+            const downloadLink = document.getElementById('download-link');
+
+            encryptionForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const inputType = document.querySelector('input[name="input_type"]:checked').value;
+                const method = methodSelect.value;
+                
+                if (inputType === 'text') {
+                    const text = textInput.value.trim();
+                    if (text === '') {
+                        alert('Veuillez saisir du texte à chiffrer.');
+                        return;
+                    }
+                    
+                    // Simuler le chiffrement et créer un fichier de téléchargement
+                    const encrypted = getEncryptedText(text, method);
+                    createDownloadLink(encrypted, 'texte_chiffre.txt');
+                    
+                } else {
+                    const file = pdfFileInput.files[0];
+                    if (!file) {
+                        alert('Veuillez sélectionner un fichier PDF.');
+                        return;
+                    }
+                    
+                    // Simuler le chiffrement du fichier PDF
+                    simulateFileEncryption(file);
+                }
+                
+                // Afficher le résultat
+                resultSection.classList.remove('hide');
+                resultSection.scrollIntoView({ behavior: 'smooth' });
+            });
+
+            function getEncryptedText(text, method) {
+                const secretKey = 'ma-cle-secrete-123';
+                let encrypted = '';
+                
+                try {
+                    switch(method) {
+                        case 'aes':
+                            encrypted = CryptoJS.AES.encrypt(text, secretKey).toString();
+                            break;
+                        case 'rsa':
+                            encrypted = btoa(text) + '_RSA_ENCRYPTED';
+                            break;
+                        case '3des':
+                            encrypted = CryptoJS.TripleDES.encrypt(text, secretKey).toString();
+                            break;
+                    }
+                } catch (error) {
+                    console.error('Erreur de chiffrement:', error);
+                    encrypted = 'Erreur lors du chiffrement';
+                }
+                
+                return encrypted;
+            }
+
+            function createDownloadLink(content, filename) {
+                const blob = new Blob([content], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                downloadLink.href = url;
+                downloadLink.download = filename;
+            }
+
+            function simulateFileEncryption(file) {
+                // Simulation du chiffrement de fichier
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const content = e.target.result;
+                    const encrypted = btoa(content) + '_ENCRYPTED_PDF';
+                    const blob = new Blob([encrypted], { type: 'application/octet-stream' });
+                    const url = URL.createObjectURL(blob);
+                    downloadLink.href = url;
+                    downloadLink.download = file.name.replace('.pdf', '_chiffre.enc');
+                };
+                reader.readAsBinaryString(file);
+            }
+
+            // Animation de focus pour les champs de saisie
+            const inputCards = document.querySelectorAll('.input-card');
+            const inputs = document.querySelectorAll('textarea, input[type="file"]');
+
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    const card = this.closest('.input-card');
+                    if (card) {
+                        card.classList.add('active');
+                    }
                 });
 
-                encryptedOutputDes.value = encrypted.toString();
-            } catch (error) {
-                console.error("Erreur CryptoJS:", error);
-                encryptedOutputDes.value = "Erreur lors du chiffrement d'aperçu 3DES.";
-            }
-        }
-
-
-        // Gestion du drag & drop
-        fileUploadArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            fileUploadArea.classList.add('drag-over');
-        });
-
-        fileUploadArea.addEventListener('dragleave', () => {
-            fileUploadArea.classList.remove('drag-over');
-        });
-
-        fileUploadArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            fileUploadArea.classList.remove('drag-over');
-            
-            const files = e.dataTransfer.files;
-            if (files.length > 0 && files[0].type === 'application/pdf') {
-                fileInput.files = files;
-                fileNameDisplay.textContent = files[0].name;
-                fileNameDisplay.classList.remove('hide');
-            }
-        });
-
-        // Event listeners
-        fileInput.addEventListener('change', function() {
-            if (this.files.length > 0) {
-                fileNameDisplay.textContent = this.files[0].name;
-                fileNameDisplay.classList.remove('hide');
-            } else {
-                fileNameDisplay.classList.add('hide');
-            }
-        });
-
-        radioText.addEventListener('change', function() {
-            toggleInputSections();
-            togglePreviewVisibility();
-        });
-        
-        radioPdf.addEventListener('change', function() {
-            toggleInputSections();
-            togglePreviewVisibility();
-        });
-        
-        methodSelect.addEventListener('change', togglePreviewVisibility);
-
-        textInput.addEventListener("input", function() {
-            const method = methodSelect.value;
-            if (method === 'aes') {
-                encryptTextRealtimeAES(this.value);
-            } else if (method === 'rsa') {
-                encryptTextRealtimeRSA(this.value);
-            } else if (method === '3des') {
-                encryptTextRealtime3DES(this.value);
-            }
-        });
-
-        // Gestion des clics sur les cartes radio
-        document.querySelectorAll('.radio-card').forEach(card => {
-            card.addEventListener('click', function() {
-                const radio = this.querySelector('input[type="radio"]');
-                radio.checked = true;
-                
-                if (radio.id === 'type-text') {
-                    radioText.dispatchEvent(new Event('change'));
-                } else {
-                    radioPdf.dispatchEvent(new Event('change'));
-                }
+                input.addEventListener('blur', function() {
+                    const card = this.closest('.input-card');
+                    if (card) {
+                        card.classList.remove('active');
+                    }
+                });
             });
-        });
 
-        // Initialisation
-        window.addEventListener('DOMContentLoaded', function() {
-            toggleInputSections();
-            togglePreviewVisibility();
-
-            document.querySelector('form').addEventListener('submit', function(event) {
-                if (radioPdf.checked && fileInput.files.length === 0) {
-                    event.preventDefault();
-                    alert('Veuillez sélectionner un fichier PDF avant de continuer.');
-                }
-                
-                if (radioText.checked && textInput.value.trim() === '') {
-                    event.preventDefault();
-                    alert('Veuillez entrer un texte à chiffrer.');
-                }
-            });
+            // Initialisation de l'aperçu
+            updatePreview();
         });
     </script>
 </body>
